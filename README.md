@@ -5,7 +5,7 @@
 ### Contact Information:  e_ben_75-python@yahoo.com
 
 ### LinkedIn: [Ben Trachtenberg](https://www.linkedin.com/in/ben-trachtenberg-3a78496)
-### Docker Hub: [Image](https://hub.docker.com/r/btr1975/apache-py3-django/)
+### Docker Hub: [Image](https://hub.docker.com/r/btr1975/apache-py2-django/)
 
 ### About
 
