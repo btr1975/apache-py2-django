@@ -11,8 +11,7 @@
 
 This image is for Python Django Apps written in Python 2
 
-### Image Content Versions
-
+### Image Versions in apache-py2-django:1.1
 
 * Python: 2.7.12
 * Apache: 2.4.18 (Ubuntu) with mod_wsgi
