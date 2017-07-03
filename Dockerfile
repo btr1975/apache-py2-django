@@ -1,17 +1,17 @@
 # Base Apache2 Server for Running Django Apps
-FROM ubuntu:16.04
+FROM btr1975/apache-py2-django:1.2
 
 LABEL maintainer="e_ben_75-python@yahoo.com" \
       important-stopping-note="Stop the server by running apache2ctl stop, this will keep from process hang" \
       description="This is a base Apache2, Python 2.7.12, Python MySQL-python, and mod_wsgi web server for Django." \
-      image-version="1.2" \
+      image-version="1.3" \
       django-version="1.11.2" \
       django-localflavor-version="1.5.1" \
       mysql-python-version="1.2.5"
 
 # Copies the apache conf python script
 
-COPY  ./apache-site-conf.py /bin/
+COPY ./apache-site-conf.sh /bin/
 
 # Arguments for Apache conf file builder script if not used, they will use default settings
 # SITE_SERVER_NAME = ServerName
@@ -24,19 +24,7 @@ ARG SITE_SERVER_ADMIN
 
 WORKDIR /DjangoSites
 
-RUN apt-get update && apt-get install -y apache2 \
-    python \
-    python-pip \
-    python-dev \
-    libmysqlclient-dev \
-    libapache2-mod-wsgi \
-    && apt-get clean \
-    && chmod 755 /DjangoSites \
-    && chmod 755 /bin/apache-site-conf.py \
-    && pip install --upgrade pip \
-    && pip install Django==1.11.2 \
-    && pip install django-localflavor==1.5.1 \
-    && pip install MySQL-python
+RUN chmod 755 /bin/apache-site-conf.sh
 
 EXPOSE 80 443
 
