@@ -9,11 +9,14 @@ LABEL maintainer="e_ben_75-python@yahoo.com" \
       django-localflavor-version="1.5.1" \
       mysql-python-version="1.2.5"
 
-# Copies the apache conf python script
+# Copies the apache conf python script and shell script
 
 COPY ./apache-site-conf.sh /bin/
+COPY ./apache-site-conf.py /bin/
 
 # Arguments for Apache conf file builder script if not used, they will use default settings
+# Also it will only allow them if there is only one site directory if there
+# is more it will use default, and you will need to modify manually
 # SITE_SERVER_NAME = ServerName
 # SITE_SERVER_ADMIN = ServerAdmin
 
@@ -24,7 +27,8 @@ ARG SITE_SERVER_ADMIN
 
 WORKDIR /DjangoSites
 
-RUN chmod 755 /bin/apache-site-conf.sh
+RUN chmod 755 /bin/apache-site-conf.sh \
+    && chmod 755 /bin/apache-site-conf.py
 
 EXPOSE 80 443
 

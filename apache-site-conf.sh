@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # This script is to build apache conf files for Django apps
-# Version: 1.0 Dev
+# Version: 1.0 Prod
 # Author: Benjamin P. Trachtenberg
 # Contact: e_ben_75-python@yahoo.com
 
-apachedirname="/etc/apache2/sites-available"
+declare -r apachedirname="/etc/apache2/sites-available"
 apacheconfname=""
-djangodirname="/DjangoSites"
+declare -r djangodirname="/DjangoSites"
 
 # Check for DjangoSites Directory
 if [[ ! -d $djangodirname ]]; then
@@ -31,8 +31,23 @@ for directory in $(ls $djangodirname); do
         if [[ ! -f "$apachedirname/$apacheconfname" ]]; then
             echo "Creating apache config $apachedirname/$apacheconfname"
             echo "<VirtualHost *:80>" >> $apachedirname/$apacheconfname
-            echo " # ServerName www.example.com" >> $apachedirname/$apacheconfname
-            echo " ServerAdmin webmaster@localhost" >> $apachedirname/$apacheconfname
+
+            if [[ $(ls -d $djangodirname/*/ | wc -l) = 1 && $SITE_SERVER_NAME ]]; then
+                echo " ServerName $SITE_SERVER_NAME" >> $apachedirname/$apacheconfname
+
+            else
+                echo " # ServerName www.example.com" >> $apachedirname/$apacheconfname
+
+            fi
+
+            if [[ $(ls -d $djangodirname/*/ | wc -l) = 1 && $SITE_SERVER_ADMIN ]]; then
+                echo " ServerAdmin $SITE_SERVER_ADMIN" >> $apachedirname/$apacheconfname
+
+            else
+                echo " ServerAdmin webmaster@localhost" >> $apachedirname/$apacheconfname
+
+            fi
+
             echo "" >> $apachedirname/$apacheconfname
             echo " Alias /media/ /DjangoSites/$directory/media/" >> $apachedirname/$apacheconfname
             echo "" >> $apachedirname/$apacheconfname
