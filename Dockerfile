@@ -1,22 +1,44 @@
-# Base Apache2 Server for Running Django Apps
-FROM btr1975/apache-py2-django:1.2
+FROM ubuntu:16.04 as temp1
 
 LABEL maintainer="e_ben_75-python@yahoo.com" \
       important-stopping-note="Stop the server by running apache2ctl stop, this will keep from process hang" \
       description="This is a base Apache2, Python 2.7.12, Python MySQL-python, and mod_wsgi web server for Django." \
-      image-version="1.3" \
+      package-name="apache-py2-django" \
+      image-version="1.1" \
       django-version="1.11.2" \
       django-localflavor-version="1.5.1" \
       mysql-python-version="1.2.5"
 
-# Copies the apache conf python script and shell script
+RUN apt-get update && apt-get install -y apache2 \
+    python \
+    python-pip \
+    python-dev \
+    libmysqlclient-dev \
+    libapache2-mod-wsgi \
+    && apt-get clean \
+    && mkdir /DjangoSites \
+    && chmod 755 /DjangoSites \
+    && pip install --upgrade pip \
+    && pip install Django==1.11.2 \
+    && pip install django-localflavor==1.5.1 \
+    && pip install MySQL-python
 
-COPY ./apache-site-conf.sh /bin/
-COPY ./apache-site-conf.py /bin/
+EXPOSE 80 443
+
+ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+
+
+FROM temp1 as temp2
+
+LABEL image-version="1.2"
+
+# Copies the apache conf python script
+
+COPY  ./apache-site-conf.py /bin/
+
+RUN chmod 755 /bin/apache-site-conf.py
 
 # Arguments for Apache conf file builder script if not used, they will use default settings
-# Also it will only allow them if there is only one site directory if there
-# is more it will use default, and you will need to modify manually
 # SITE_SERVER_NAME = ServerName
 # SITE_SERVER_ADMIN = ServerAdmin
 
@@ -27,9 +49,13 @@ ARG SITE_SERVER_ADMIN
 
 WORKDIR /DjangoSites
 
-RUN chmod 755 /bin/apache-site-conf.sh \
-    && chmod 755 /bin/apache-site-conf.py
 
-EXPOSE 80 443
+FROM temp2 as temp3
 
-ENTRYPOINT ["apache2ctl", "-D", "FOREGROUND"]
+LABEL image-version="1.3"
+
+# Copies the apache conf shell script
+
+COPY ./apache-site-conf.sh /bin/
+
+RUN chmod 755 /bin/apache-site-conf.sh
