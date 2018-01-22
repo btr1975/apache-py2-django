@@ -29,7 +29,8 @@ WORKDIR /DjangoSites
 
 RUN chmod 755 /bin/apache-site-conf.sh \
     && chmod 755 /bin/apache-site-conf.py
-    apt-get update && apt-get install -y apache2 \
+
+RUN apt-get update && apt-get install -y apache2 \
     python \
     python-pip \
     python-dev \
