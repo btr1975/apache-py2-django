@@ -37,7 +37,6 @@ RUN apt-get update && apt-get install -y apache2 \
     libmysqlclient-dev \
     libapache2-mod-wsgi \
     && apt-get clean \
-    && mkdir /DjangoSites \
     && chmod 755 /DjangoSites \
     && pip install --upgrade pip \
     && pip install Django==1.11.2 \
